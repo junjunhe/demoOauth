@@ -120,7 +120,22 @@
 		<!-- The main class to start by executing java -jar -->
 		<start-class>com.baeldung.config.AuthorizationServerApplication</start-class>
 	</properties>
-	<!-- <profiles> <profile> <id>dev</id> <build> <resources> <resource> <directory>src/main/resources</directory> 
-		<filtering>true</filtering> <excludes> <exclude>*.jks</exclude> </excludes> 
-		</resource> </resources> </build> </profile> </profiles> -->
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+						<filtering>true</filtering>
+						<excludes>
+							<exclude>*.jks</exclude>
+						</excludes>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+	</profiles>
+		
 </project>
