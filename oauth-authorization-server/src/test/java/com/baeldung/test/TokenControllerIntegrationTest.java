@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.baeldung.config.AuthorizationServerApplication;
-import com.baeldung.controller.TokenController;
+import com.baeldung.config.controller.TokenController;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { AuthorizationServerApplication.class, TokenController.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
