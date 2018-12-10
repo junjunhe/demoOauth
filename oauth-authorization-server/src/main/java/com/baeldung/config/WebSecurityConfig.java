@@ -35,7 +35,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // @formatter:off
 		http.authorizeRequests().antMatchers("/login").permitAll()
 		.antMatchers("/oauth/token/revokeById/**").permitAll()
-		.antMatchers("/tokens").permitAll()
 		.antMatchers("/tokens/**").permitAll()
 		// junjun:
 		// enable exchnage token endpoint for all users

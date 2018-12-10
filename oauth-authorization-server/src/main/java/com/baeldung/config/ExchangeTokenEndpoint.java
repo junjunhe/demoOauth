@@ -7,8 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -26,14 +25,13 @@ import org.springframework.security.oauth2.provider.OAuth2RequestValidator;
 import org.springframework.security.oauth2.provider.endpoint.AbstractEndpoint;
 import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestValidator;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * <p>
@@ -43,6 +41,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author Junjun He
  * 
  */
+// junjun:
 @FrameworkEndpoint
 public class ExchangeTokenEndpoint extends AbstractEndpoint {
 
@@ -50,7 +49,10 @@ public class ExchangeTokenEndpoint extends AbstractEndpoint {
 
 	private Set<HttpMethod> allowedRequestMethods = new HashSet<HttpMethod>(Arrays.asList(HttpMethod.POST));
 	
-	// junjun:
+	// this will autowired the JwtTokenStore object here
+    @Autowired
+    TokenStore tokenStore;
+    
 	// create a new constructor which initializes all data needed for the end point
 	public ExchangeTokenEndpoint() {
 		
@@ -80,20 +82,20 @@ public class ExchangeTokenEndpoint extends AbstractEndpoint {
 			@RequestHeader("Authorization") String header,
 			@RequestParam Map<String, String> parameters) throws HttpRequestMethodNotSupportedException {
 
-		// junjun: 
-		//OAuth2AccessToken token = getTokenGranter().grant(tokenRequest.getGrantType(), tokenRequest);
-		String tokenStr = "abc";
-		// junjun: get the current HTTP request object so that we can get CAT token
-		//HttpServletRequest curRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-		//		.getRequest();
 		System.out.println(header);
 		String origTokenString = header;
 
+		OAuth2AccessToken origToken = null;
 		if (origTokenString != null) {
-			OAuth2AccessToken origToken = convertString2Token(origTokenString);
+			
+			// convert JWT token string to access token
+			origToken = tokenStore.readAccessToken(origTokenString);
+			System.out.println(origToken);
 		}
-		
+
 		final Map<String, Object> additionalInfo = new HashMap<>();
+
+		/* don't create new access token, only change original token
 		OAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(tokenStr);
 
 		additionalInfo.put("tenant", "spectre");
@@ -102,19 +104,13 @@ public class ExchangeTokenEndpoint extends AbstractEndpoint {
 		additionalInfo.put("client", "fed id service");
 		additionalInfo.put("client_id", "1234");
 		additionalInfo.put("idsp", "spectre");
+		*/
 		
+		additionalInfo.put("user", "exchanged junjun");
 		additionalInfo.put("organization", "superior hospital");
-		((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
+		((DefaultOAuth2AccessToken) origToken).setAdditionalInformation(additionalInfo);
 		
-		return getResponse(accessToken);
-	}
-
-	private OAuth2AccessToken convertString2Token(String tokenStr) {
-		
-		// junjun:
-		// todo:
-		// need to figure out how to generate the access token from this string
-		return new DefaultOAuth2AccessToken(tokenStr);
+		return getResponse(origToken);
 	}
 	
 	/**

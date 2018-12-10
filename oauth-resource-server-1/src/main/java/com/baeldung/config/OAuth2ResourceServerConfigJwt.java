@@ -44,12 +44,15 @@ public class OAuth2ResourceServerConfigJwt extends ResourceServerConfigurerAdapt
 		return new JwtTokenStore(accessTokenConverter());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
 		converter.setAccessTokenConverter(customAccessTokenConverter);
 
 		// converter.setSigningKey("123");
+        // junjun:
+        // use java keystore keypair for jwt signing
 		final Resource resource = new ClassPathResource("public.txt");
 		String publicKey = null;
 		try {

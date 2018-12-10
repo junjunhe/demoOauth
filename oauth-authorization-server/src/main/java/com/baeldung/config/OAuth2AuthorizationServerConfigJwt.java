@@ -84,6 +84,8 @@ public class OAuth2AuthorizationServerConfigJwt extends AuthorizationServerConfi
     public JwtAccessTokenConverter accessTokenConverter() {
         final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         //converter.setSigningKey("123");
+        // junjun:
+        // use java keystore keypair for jwt signing
         final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("mytest.jks"), "mypass".toCharArray());
         converter.setKeyPair(keyStoreKeyFactory.getKeyPair("mytest"));
         return converter;

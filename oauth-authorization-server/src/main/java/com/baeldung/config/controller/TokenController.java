@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+// junjun:
+// move this class to this sub package of the main boot application.
 @RestController
 public class TokenController {
 
